@@ -1,0 +1,73 @@
+//Example from gRPC site
+plugins {
+    id 'application'
+    id 'com.google.protobuf' version '0.9.4'
+    id 'idea'
+    id 'java'
+}
+
+group = 'com.costa.luiz.grpc'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    maven { // The google mirror is less flaky than mavenCentral()
+        url "https://maven-central.storage-download.googleapis.com/maven2/" }
+    mavenCentral()
+    mavenLocal()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+def grpcVersion = '1.58.0' // CURRENT_GRPC_VERSION
+def protobufVersion = '3.24.0'
+def protocVersion = protobufVersion
+
+dependencies {
+    implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+    implementation "io.grpc:grpc-stub:${grpcVersion}"
+    // Allow support the reflection API
+    implementation "io.grpc:grpc-services:${grpcVersion}"
+
+    compileOnly "io.grpc:grpc-services:${grpcVersion}"
+    compileOnly "org.apache.tomcat:annotations-api:6.0.53"
+
+    //Server used on HelloServer
+    runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
+
+    //Log
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'org.slf4j:slf4j-simple:2.0.9'
+
+    //Tests
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    testImplementation group: 'io.grpc', name: 'grpc-testing', version: '1.58.0'
+}
+
+protobuf {
+    protoc { artifact = "com.google.protobuf:protoc:${protocVersion}" }
+    plugins {
+        grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}" }
+    }
+    generateProtoTasks {
+        all()*.plugins { grpc {} }
+    }
+}
+
+// Inform IDEs like IntelliJ IDEA, Eclipse or NetBeans about the generated code.
+sourceSets {
+    main {
+        java {
+            srcDirs 'build/generated/source/proto/main/grpc'
+            srcDirs 'build/generated/source/proto/main/java'
+        }
+    }
+}
+
+tasks.named('test', Test) {
+    useJUnitPlatform()
+}

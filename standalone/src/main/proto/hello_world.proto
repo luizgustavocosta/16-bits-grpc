@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.costa.luiz.grpc.example";
+option java_outer_classname = "HelloWorld";
+option objc_class_prefix = "EX";
+
+package example;
+
+service Hello {
+  rpc FindOneHelloMessage(Request) returns (Response) {}
+  rpc FindManyHelloMessages(Id) returns (ResponseList) {}
+}
+
+message Request {
+  optional string name = 1;
+  optional string nickName = 2;
+  optional string dob = 3;
+}
+
+message Response {
+  string message = 1;
+}
+
+message Id {
+  int32 id = 1;
+}
+
+message ResponseList {
+  repeated Response response = 1;
+}
