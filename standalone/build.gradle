@@ -1,4 +1,4 @@
-//Example from gRPC site
+//Main idea from github grpc
 plugins {
     id 'application'
     id 'com.google.protobuf' version '0.9.4'
@@ -10,7 +10,7 @@ group = 'com.costa.luiz.grpc'
 version = '1.0-SNAPSHOT'
 
 repositories {
-    maven { // The google mirror is less flaky than mavenCentral()
+    maven {
         url "https://maven-central.storage-download.googleapis.com/maven2/" }
     mavenCentral()
     mavenLocal()
@@ -21,30 +21,38 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-def grpcVersion = '1.58.0' // CURRENT_GRPC_VERSION
+application {
+    mainClass = 'com.costa.luiz.example.Server'
+}
+
+def grpcVersion = '1.58.0'
 def protobufVersion = '3.24.0'
 def protocVersion = protobufVersion
+def sl4jVersion = '2.0.9'
+def junit5Version = '5.7.1'
 
 dependencies {
-    implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+    //implementation "io.grpc:grpc-protobuf:${grpcVersion}"
     implementation "io.grpc:grpc-stub:${grpcVersion}"
+
     // Allow support the reflection API
     implementation "io.grpc:grpc-services:${grpcVersion}"
 
     compileOnly "io.grpc:grpc-services:${grpcVersion}"
+    //Used by generated code
     compileOnly "org.apache.tomcat:annotations-api:6.0.53"
 
-    //Server used on HelloServer
+    //Netty to be used by Server class
     runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
 
-    //Log
-    implementation 'org.slf4j:slf4j-api:2.0.9'
-    implementation 'org.slf4j:slf4j-simple:2.0.9'
+    //Logging
+//    implementation "org.slf4j:slf4j-api:${sl4jVersion}"
+    implementation "org.slf4j:slf4j-simple:${sl4jVersion}"
 
-    //Tests
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
+    //Testing
+    testImplementation "org.junit.jupiter:junit-jupiter:${junit5Version}"
+//    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+//    testImplementation "io.grpc.grpc-testing: ${grpcVersion}"
     testImplementation group: 'io.grpc', name: 'grpc-testing', version: '1.58.0'
 }
 

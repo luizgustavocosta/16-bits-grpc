@@ -1,10 +1,11 @@
 package com.costa.luiz.example;
 
-import com.costa.luiz.grpc.example.HelloGrpc;
-import com.costa.luiz.grpc.example.Id;
-import com.costa.luiz.grpc.example.Request;
-import com.costa.luiz.grpc.example.Response;
-import com.costa.luiz.grpc.example.ResponseList;
+import com.costa.luiz.grpc.example.GreetingId;
+import com.costa.luiz.grpc.example.GreetingRequest;
+import com.costa.luiz.grpc.example.GreetingResponse;
+import com.costa.luiz.grpc.example.GreetingResponseList;
+import com.costa.luiz.grpc.example.GreetingServiceGrpc;
+import com.costa.luiz.grpc.example.Language;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.testing.GrpcCleanupRule;
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * Copied from
  * <a href="https://github.com/grpc/grpc-java/blob/master/examples/src/test/java/io/grpc/examples/helloworld/HelloWorldServerTest.java">GH grpc</a>
  */
-public class HelloServerTest {
+class ServerTest {
 
     public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
 
@@ -27,15 +28,18 @@ public class HelloServerTest {
 
         // Create a server, add service, start, and register for automatic graceful shutdown.
         grpcCleanup.register(InProcessServerBuilder
-                .forName(serverName).directExecutor().addService(new HelloServer.ExampleImpl()).build().start());
+                .forName(serverName).directExecutor().addService(new GreetingMessageService.ExampleImpl()).build().start());
 
-        HelloGrpc.HelloBlockingStub blockingStub = HelloGrpc.newBlockingStub(
+        GreetingServiceGrpc.GreetingServiceBlockingStub blockingStub = GreetingServiceGrpc.newBlockingStub(
                 // Create a client channel and register for automatic graceful shutdown.
                 grpcCleanup.register(InProcessChannelBuilder.forName(serverName).directExecutor().build()));
 
-        Response reply = blockingStub.findOneHelloMessage(Request.newBuilder().setName("Luiz").build());
+        GreetingResponse response = blockingStub.findOneHelloMessage(GreetingRequest.newBuilder()
+                .setName("Luiz")
+                .setLanguage(Language.ENGLISH)
+                .build());
 
-        assertEquals("This was made using gRPC", reply.getMessage());
+        assertEquals("Hello there", response.getMessage());
     }
 
     @Test
@@ -45,15 +49,15 @@ public class HelloServerTest {
 
         // Create a server, add service, start, and register for automatic graceful shutdown.
         grpcCleanup.register(InProcessServerBuilder
-                .forName(serverName).directExecutor().addService(new HelloServer.ExampleImpl()).build().start());
+                .forName(serverName).directExecutor().addService(new GreetingMessageService.ExampleImpl()).build().start());
 
-        HelloGrpc.HelloBlockingStub blockingStub = HelloGrpc.newBlockingStub(
+        GreetingServiceGrpc.GreetingServiceBlockingStub blockingStub = GreetingServiceGrpc.newBlockingStub(
                 // Create a client channel and register for automatic graceful shutdown.
                 grpcCleanup.register(InProcessChannelBuilder.forName(serverName).directExecutor().build()));
 
-        ResponseList responseList = blockingStub.findManyHelloMessages(Id.newBuilder().setId(42).build());
+        GreetingResponseList response = blockingStub.findHelloMessagesById(GreetingId.newBuilder().setId(42).build());
 
-        assertEquals(3, responseList.getResponseList().size());
+        assertEquals(3, response.getResponseList().size());
     }
 
 }

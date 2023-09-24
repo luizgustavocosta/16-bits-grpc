@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package example;
+
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "com.costa.luiz.grpc.example";
+option java_outer_classname = "Greeting";
+
+service GreetingService {
+  rpc SayHello(google.protobuf.Empty) returns (GreetingResponse) {}
+  rpc DeleteHelloMessage(GreetingId) returns (google.protobuf.Empty) {}
+  rpc FindOneHelloMessage(GreetingRequest) returns (GreetingResponse) {}
+  rpc FindHelloMessagesById(GreetingId) returns (GreetingResponseList) {}
+}
+
+message GreetingResponse {
+  string message = 1;
+}
+
+enum Language {
+  ENGLISH = 0;
+  PORTUGUESE = 1;
+  SPANISH = 2;
+}
+
+message GreetingRequest {
+  optional string name = 1;
+  optional string nickName = 2;
+  optional string dob = 3;
+  optional Language language = 4;
+}
+
+message GreetingId {
+  int32 id = 1;
+}
+
+message GreetingResponseList {
+  repeated GreetingResponse response = 1;
+}
