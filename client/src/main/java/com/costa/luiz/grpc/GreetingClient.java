@@ -17,7 +17,7 @@ public class GreetingClient {
 
     private final GreetingServiceGrpc.GreetingServiceBlockingStub blockingStub;
 
-    private static final int PORT = 50052;
+    private static final int PORT = 50051;
 
     /**
      * Construct client for accessing HelloWorld server using the existing channel.

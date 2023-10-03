@@ -11,19 +11,20 @@ import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.nonNull;
 
-public class Server {
+public class FancyServer {
 
-    protected static final Logger logger = LoggerFactory.getLogger(Server.class);
-    private static final int PORT = 50052;
+    protected static final Logger logger = LoggerFactory.getLogger(FancyServer.class);
+    private static final int GREETING_CONTROLLER_SERVICE_PORT = 50051;
     private io.grpc.Server server;
 
     public static void main(String[] args) {
-        Server helloServer = new Server();
+        FancyServer fancyServer = new FancyServer();
         try {
-            helloServer.start();
-            helloServer.blockUntilShutdown();
+            fancyServer.start();
+            fancyServer.blockUntilShutdown();
         } catch (IOException | InterruptedException exception) {
-            GreetingMessageService.logger.error(exception.getMessage(), exception);
+            logger.error(exception.getMessage(), exception);
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -32,18 +33,19 @@ public class Server {
     }
 
     private void start() throws IOException {
-        server = Grpc.newServerBuilderForPort(PORT,
+        server = Grpc.newServerBuilderForPort(GREETING_CONTROLLER_SERVICE_PORT,
                         InsecureServerCredentials.create())
-                .addService(new GreetingMessageService.ExampleImpl())
+                .addService(new GreetingMessageService())
                 .addService(ProtoReflectionService.newInstance())
                 .build()
                 .start();
-        logger.info("Server started at port {}", PORT);
+        logger.info("Fancy Server started at port {}", GREETING_CONTROLLER_SERVICE_PORT);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
-                Server.this.stop();
+                FancyServer.this.stop();
             } catch (InterruptedException exception) {
-                throw new RuntimeException(exception);
+                logger.error(exception.getMessage(), exception);
+                Thread.currentThread().interrupt();
             }
         }));
     }

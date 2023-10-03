@@ -12,66 +12,61 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class GreetingMessageService {
-    protected static final Logger logger = LoggerFactory.getLogger(GreetingMessageService.class);
+public class GreetingMessageService extends GreetingServiceGrpc.GreetingServiceImplBase {
+    private static final Logger logger = LoggerFactory.getLogger(GreetingMessageService.class);
 
-    protected static class ExampleImpl extends GreetingServiceGrpc.GreetingServiceImplBase {
-
-        @Override
-        public void findOneHelloMessage(GreetingRequest request, StreamObserver<GreetingResponse> responseObserver) {
-            logger.info("New request has been arrived to method findOneHelloMessage");
-            var message = "";
-            switch (request.getLanguage()) {
-                case ENGLISH -> message = "Hello there";
-                case PORTUGUESE -> message = "Olá";
-                case SPANISH -> message = "Hola";
-                case UNRECOGNIZED -> {
-                    message = "The language sent cannot be recognized";
-                }
-                default -> throw new IllegalStateException("Unexpected value: " + request.getLanguage());
-            }
-            responseObserver.onNext(
-                    GreetingResponse.newBuilder()
-                            .setMessage(message)
-                            .build()
-            );
-            responseObserver.onCompleted();
+    @Override
+    public void findOneHelloMessage(GreetingRequest request, StreamObserver<GreetingResponse> responseObserver) {
+        logger.info("New request has been arrived to method findOneHelloMessage");
+        var message = "";
+        switch (request.getLanguage()) {
+            case ENGLISH -> message = "Hello there";
+            case PORTUGUESE -> message = "Olá";
+            case SPANISH -> message = "Hola";
+            default -> throw new IllegalStateException("Unexpected value: " + request.getLanguage());
         }
-
-        @Override
-        public void findHelloMessagesById(GreetingId request, StreamObserver<GreetingResponseList> responseObserver) {
-            logger.info("New request has been arrived to method findManyHelloMessages");
-            logger.info("Fake call to DB to retrieve data");
-            responseObserver.onNext(
-                    GreetingResponseList.newBuilder()
-                            .addAllResponse(
-                                    List.of(
-                                            GreetingResponse.newBuilder().setMessage("First").build(),
-                                            GreetingResponse.newBuilder().setMessage("Second").build(),
-                                            GreetingResponse.newBuilder().setMessage("Third").build()
-                                    )
-                            )
-                            .build()
-            );
-            responseObserver.onCompleted();
-        }
-
-        @Override
-        public void sayHello(Empty request, StreamObserver<GreetingResponse> responseObserver) {
-            logger.info("Say a generic hello");
-            responseObserver.onNext(
-                    GreetingResponse.newBuilder()
-                            .setMessage("Hello there!")
-                            .build()
-            );
-            responseObserver.onCompleted();
-        }
-
-        @Override
-        public void deleteHelloMessage(GreetingId request, StreamObserver<Empty> responseObserver) {
-            //Fake call to search the entity id
-            responseObserver.onNext(Empty.newBuilder().build());
-            responseObserver.onCompleted();
-        }
+        responseObserver.onNext(
+                GreetingResponse.newBuilder()
+                        .setMessage(message)
+                        .build()
+        );
+        responseObserver.onCompleted();
     }
+
+    @Override
+    public void findHelloMessagesById(GreetingId request, StreamObserver<GreetingResponseList> responseObserver) {
+        logger.info("New request has been arrived to method findManyHelloMessages");
+        logger.info("Fake call to DB to retrieve data");
+        responseObserver.onNext(
+                GreetingResponseList.newBuilder()
+                        .addAllResponse(
+                                List.of(
+                                        GreetingResponse.newBuilder().setMessage("First").build(),
+                                        GreetingResponse.newBuilder().setMessage("Second").build(),
+                                        GreetingResponse.newBuilder().setMessage("Third").build()
+                                )
+                        )
+                        .build()
+        );
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void sayHello(Empty request, StreamObserver<GreetingResponse> responseObserver) {
+        logger.info("Say a generic hello");
+        responseObserver.onNext(
+                GreetingResponse.newBuilder()
+                        .setMessage("Hello there!")
+                        .build()
+        );
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void deleteHelloMessage(GreetingId request, StreamObserver<Empty> responseObserver) {
+        //Fake call to search the entity id
+        responseObserver.onNext(Empty.newBuilder().build());
+        responseObserver.onCompleted();
+    }
+
 }

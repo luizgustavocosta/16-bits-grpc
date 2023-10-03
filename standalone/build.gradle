@@ -25,14 +25,16 @@ application {
     mainClass = 'com.costa.luiz.example.Server'
 }
 
+def assertjCoreVersion = '3.11.1'
+def junit5Version = '5.7.1'
 def grpcVersion = '1.58.0'
+def mockitoVersion = '5.5.0'
 def protobufVersion = '3.24.0'
 def protocVersion = protobufVersion
 def sl4jVersion = '2.0.9'
-def junit5Version = '5.7.1'
+def tomcatAnnotationsVersion =  '6.0.53'
 
 dependencies {
-    //implementation "io.grpc:grpc-protobuf:${grpcVersion}"
     implementation "io.grpc:grpc-stub:${grpcVersion}"
 
     // Allow support the reflection API
@@ -40,20 +42,19 @@ dependencies {
 
     compileOnly "io.grpc:grpc-services:${grpcVersion}"
     //Used by generated code
-    compileOnly "org.apache.tomcat:annotations-api:6.0.53"
+    compileOnly "org.apache.tomcat:annotations-api:${tomcatAnnotationsVersion}"
 
     //Netty to be used by Server class
     runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
 
     //Logging
-//    implementation "org.slf4j:slf4j-api:${sl4jVersion}"
     implementation "org.slf4j:slf4j-simple:${sl4jVersion}"
 
     //Testing
     testImplementation "org.junit.jupiter:junit-jupiter:${junit5Version}"
-//    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
-//    testImplementation "io.grpc.grpc-testing: ${grpcVersion}"
-    testImplementation group: 'io.grpc', name: 'grpc-testing', version: '1.58.0'
+    testImplementation "io.grpc:grpc-testing:${grpcVersion}"
+    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+    testImplementation "org.assertj:assertj-core:${assertjCoreVersion}"
 }
 
 protobuf {
