@@ -34,7 +34,7 @@ public class GreetingClient {
      * Say hello to server.
      */
     public void greet(String name) {
-        logger.info("Will try to greet " + name + " ...");
+        logger.info("Will try to greet " + name);
         GreetingRequest request = GreetingRequest.newBuilder().setName(name).build();
         GreetingResponse response;
         try {
