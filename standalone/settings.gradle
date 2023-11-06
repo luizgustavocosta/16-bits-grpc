@@ -1,0 +1,4 @@
+rootProject.name = 'standalone'
+include 'standalone'
+include 'trash'
+
