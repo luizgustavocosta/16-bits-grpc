@@ -20,14 +20,14 @@ public class GreetingMessageService extends GreetingServiceGrpc.GreetingServiceI
         logger.info("New request has been arrived to method findOneHelloMessage");
         var message = "";
         switch (request.getLanguage()) {
-            case ENGLISH -> message = "Hello there";
+            case ENGLISH -> message = "Hello";
             case PORTUGUESE -> message = "Olá";
             case SPANISH -> message = "Hola";
             default -> throw new IllegalStateException("Unexpected value: " + request.getLanguage());
         }
         responseObserver.onNext(
                 GreetingResponse.newBuilder()
-                        .setMessage(message)
+                        .setMessage(message +" "+ request.getName())
                         .build()
         );
         responseObserver.onCompleted();
